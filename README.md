@@ -99,8 +99,8 @@ flowchart TD
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/webtester.git
-cd webtester
+git clone https://github.com/14KD/web-sec.git
+cd web-sec
 
 # 2. Instalar el paquete en modo editable con herramientas de desarrollo
 pip install -e "./web test[dev]"
