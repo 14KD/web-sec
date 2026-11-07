@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caches and test artifacts
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+*.coverage
+
+# Temporary reports
+reports/*
+!reports/example_reports/
+
+# Graphify temporary caches (keep graph.json, graph.html, and GRAPH_REPORT.md)
+graphify-out/cache/
+graphify-out/.graphify_analysis.json
+graphify-out/.graphify_build.json
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Virtual environments
+venv/
+.venv/
+env/

@@ -1,0 +1,49 @@
+{
+  "libraries": [
+    {
+      "name": "jquery",
+      "vulnerable_below": "3.5.0",
+      "cve": "CVE-2020-11022",
+      "severity": "Media",
+      "title": "jQuery XSS en manipulación de HTML",
+      "description": "Versiones de jQuery anteriores a 3.5.0 son vulnerables a cross-site scripting (XSS) mediante expresiones regulares en htmlPrefilter.",
+      "recommendation": "Actualizar jQuery a la versión 3.5.0 o superior."
+    },
+    {
+      "name": "bootstrap",
+      "vulnerable_below": "4.3.1",
+      "cve": "CVE-2019-8331",
+      "severity": "Media",
+      "title": "Bootstrap XSS en componentes Tooltip y Popover",
+      "description": "Versiones de Bootstrap anteriores a 4.3.1 permiten XSS cuando se habilita contenido HTML en tooltips o popovers sin sanitizar.",
+      "recommendation": "Actualizar Bootstrap a la versión 4.3.1 o superior (v5 recomendada)."
+    },
+    {
+      "name": "wordpress",
+      "vulnerable_below": "6.4.2",
+      "cve": "CVE-2023-39999",
+      "severity": "Alta",
+      "title": "WordPress Core Desactualizado",
+      "description": "Instalación de WordPress con versión inferior a 6.4.2 expuesta a vulnerabilidades conocidas en plugins y núcleo.",
+      "recommendation": "Actualizar WordPress a la última versión estable oficial."
+    },
+    {
+      "name": "angularjs",
+      "vulnerable_below": "1.8.0",
+      "cve": "CVE-2020-7676",
+      "severity": "Alta",
+      "title": "AngularJS (1.x) Fin de Ciclo de Vida y Sandbox Bypass",
+      "description": "AngularJS 1.x ha alcanzado el fin de su soporte oficial (EOL) y presenta vulnerabilidades de bypass de sandbox y XSS.",
+      "recommendation": "Migrar hacia Angular moderno (v17+) o asegurar componentes obsoletos."
+    },
+    {
+      "name": "lodash",
+      "vulnerable_below": "4.17.21",
+      "cve": "CVE-2021-23337",
+      "severity": "Alta",
+      "title": "Lodash Prototype Pollution",
+      "description": "Versiones de Lodash anteriores a 4.17.21 son susceptibles a contaminación de prototipos mediante la función template.",
+      "recommendation": "Actualizar la dependencia lodash a 4.17.21 o superior."
+    }
+  ]
+}

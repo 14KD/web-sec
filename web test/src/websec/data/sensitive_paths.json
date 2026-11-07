@@ -1,0 +1,51 @@
+[
+  {
+    "path": "/.git/HEAD",
+    "name": "Repositorio Git Expuesto (.git/HEAD)",
+    "severity": "Crítica",
+    "match_content": "ref: refs/",
+    "impact": "Descarga potencial de todo el código fuente, historial de commits y credenciales incrustadas."
+  },
+  {
+    "path": "/.env",
+    "name": "Archivo de Entorno Expuesto (.env)",
+    "severity": "Crítica",
+    "match_content": "DB_",
+    "impact": "Exposición de contraseñas de bases de datos, claves de API y secretos de producción."
+  },
+  {
+    "path": "/.well-known/security.txt",
+    "name": "Archivo security.txt",
+    "severity": "Informativa",
+    "match_content": "Contact:",
+    "impact": "Canal oficial y buenas prácticas de divulgación responsable de vulnerabilidades."
+  },
+  {
+    "path": "/robots.txt",
+    "name": "Archivo robots.txt Accesible",
+    "severity": "Informativa",
+    "match_content": "User-agent:",
+    "impact": "Divulgación de rutas restringidas o directorios administrativos a rastreadores."
+  },
+  {
+    "path": "/sitemap.xml",
+    "name": "Mapa del Sitio (sitemap.xml)",
+    "severity": "Informativa",
+    "match_content": "<urlset",
+    "impact": "Mapeo exhaustivo de la estructura y páginas del sitio web."
+  },
+  {
+    "path": "/admin",
+    "name": "Panel de Administración Expuesto (/admin)",
+    "severity": "Baja",
+    "match_content": null,
+    "impact": "Superficie de ataque expuesta para intentos de autenticación o ataques dirigidos."
+  },
+  {
+    "path": "/backup.zip",
+    "name": "Copia de Seguridad Expuesta (/backup.zip)",
+    "severity": "Alta",
+    "match_content": null,
+    "impact": "Descarga de archivos de respaldo con datos sensibles del sistema."
+  }
+]
