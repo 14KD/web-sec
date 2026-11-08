@@ -3,7 +3,7 @@
 from collections import deque
 from dataclasses import dataclass, field
 from typing import Dict, List, Set
-from urllib.parse import urljoin, urldefrag
+from urllib.parse import urljoin, urldefrag, urlparse
 from bs4 import BeautifulSoup
 
 from websec.config import ScanConfig
@@ -132,9 +132,13 @@ class LightCrawler:
         links: List[str] = []
         for tag in soup.find_all("a", href=True):
             href = tag["href"].strip()
-            if href.startswith(("javascript:", "mailto:", "tel:", "#")):
+            if not href or href.startswith("#"):
                 continue
             full_url = urljoin(base_url, href)
+            # Sólo enlaces navegables http(s): descarta javascript:, vbscript:, data:,
+            # file:, mailto:, tel:, etc. sin importar mayúsculas.
+            if urlparse(full_url).scheme.lower() not in ("http", "https"):
+                continue
             links.append(full_url)
         return links
 
