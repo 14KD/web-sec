@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Caches and test artifacts
+# Test & coverage artifacts
 .pytest_cache/
 .coverage
 .coverage.*
@@ -14,10 +14,10 @@ htmlcov/
 reports/*
 !reports/example_reports/
 
-# Graphify temporary caches (keep graph.json, graph.html, and GRAPH_REPORT.md)
-graphify-out/cache/
-graphify-out/.graphify_analysis.json
-graphify-out/.graphify_build.json
+# Agent & Knowledge Graph directories (local to developer environment)
+.agents/
+graphify-out/
+skills-lock.json
 
 # OS and IDE files
 .DS_Store

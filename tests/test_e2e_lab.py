@@ -13,7 +13,7 @@ from typing import Generator
 import pytest
 import httpx
 
-# Asegurar que el directorio raíz de web test esté en sys.path para importar lab
+# Asegurar que el directorio raíz del proyecto esté en sys.path para importar lab
 root_dir = Path(__file__).resolve().parent.parent
 if str(root_dir) not in sys.path:
     sys.path.insert(0, str(root_dir))

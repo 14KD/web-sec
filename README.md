@@ -1,19 +1,19 @@
-# 🛡️ WebSec Auditor & Knowledge Graph Security Engine
+# 🛡️ WebSec Auditor
 
 <div align="center">
 
-[![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![Tests](https://img.shields.io/badge/Tests-56%20Passed-success.svg?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/)
-[![Coverage](https://img.shields.io/badge/Coverage-94%25-brightgreen.svg?style=for-the-badge&logo=codecov&logoColor=white)](#-batería-de-pruebas-drásticas)
-[![Knowledge Graph](https://img.shields.io/badge/Knowledge%20Graph-499%20Nodes-purple.svg?style=for-the-badge&logo=graphql&logoColor=white)](#-grafo-de-conocimiento-con-graphify)
-[![OWASP](https://img.shields.io/badge/OWASP-Top%2010%20Aligned-orange.svg?style=for-the-badge&logo=owasp&logoColor=white)](https://owasp.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-3776AB.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Tests](https://img.shields.io/badge/Tests-56%20Passed-10B981.svg?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/)
+[![Coverage](https://img.shields.io/badge/Coverage-94%25-06B6D4.svg?style=for-the-badge&logo=codecov&logoColor=white)](#-batería-de-pruebas-drásticas)
+[![OWASP](https://img.shields.io/badge/OWASP-Top%2010%20Aligned-F59E0B.svg?style=for-the-badge&logo=owasp&logoColor=white)](https://owasp.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-6366F1.svg?style=for-the-badge)](LICENSE)
 
 <p align="center">
-  <b>Plataforma profesional y ética de auditoría de seguridad web, potenciada por grafos de conocimiento topológicos y testing de resiliencia drástico.</b>
+  <b>Herramienta profesional de auditoría de seguridad web ética, no destructiva y modular.</b><br>
+  Diseñada para evaluar la postura defensiva de aplicaciones web mediante análisis activo con canarios inocuos, inspección pasiva exhaustiva y generación de reportes listos para remediación.
 </p>
 
-[Instalación](#-instalación-rápida) • [Uso de la CLI](#-ejemplos-de-uso) • [Pruebas Drásticas](#-batería-de-pruebas-drásticas) • [Grafo Graphify](#-grafo-de-conocimiento-con-graphify) • [Agentes & Skills](#-ecosistema-de-agentes-y-skills) • [Laboratorio Local](#-laboratorio-vulnerable-local)
+[Instalación](#-instalación-rápida) • [Uso de la CLI](#-ejemplos-de-uso) • [Catálogo de Módulos](#-catálogo-de-módulos-17) • [Pruebas Drásticas](#-batería-de-pruebas-drásticas) • [Laboratorio Local](#-laboratorio-vulnerable-local) • [Reportes](#-reportes-generados) • [Ética](#-reglas-éticas-obligatorias)
 
 </div>
 
@@ -21,61 +21,71 @@
 
 ## 🌟 Características Principales
 
-- 🎯 **17 Módulos Especializados**: Análisis activo y pasivo no destructivo (XSS con canarios, heurística SQLi, CORS, Open Redirect, Cookies, CSRF, TLS, Cabeceras, Subdominios, y más).
-- 🧠 **Guiado por Grafo de Conocimiento (Graphify)**: Topología completa del código indexada en un grafo persistente de 499 nodos y 1,533 aristas para análisis de impacto y trazabilidad de dependencias.
-- ⚡ **Testing Drástico Multi-Capa**: Fuzzing basado en propiedades con [Hypothesis](https://hypothesis.readthedocs.io/), inyección de caos y tolerancia a fallos, integración E2E en vivo y validación arquitectónica automática.
-- 🤖 **Ecosistema de Agentes Autónomos**: Equipado con skills para auditorías OWASP Top 10, pentesting web seguro y auditoría arquitectónica asistida por IA.
-- 📋 **Reportes Multi-Formato**: Generación simultánea de dashboards interactivos HTML, resúmenes ejecutivos en Markdown (`VULNERABILITIES.md`) y esquemas JSON listos para pipelines de CI/CD.
+- 🎯 **17 Módulos de Auditoría Especializados**:
+  - **Pruebas Activas No Destructivas**: Inyección de marcadores canarios únicos (XSS, SQLi Heuristic, Open Redirect, CORS Misconfigurations, Clickjacking, Formularios CSRF, Archivos Expuestos, Enumeración de Subdominios y Content Discovery).
+  - **Análisis Pasivo Silencioso**: Inspección de cabeceras de seguridad (CSP, HSTS, X-Frame-Options), cookies con flags (`HttpOnly`, `Secure`, `SameSite`), Mixed Content & SRI, fingerprinting de tecnologías con cotejo de CVEs locales, registros DNS (SPF, DMARC, CAA) y detección de trazas de depuración (Stack Traces).
+- 🛡️ **Control de Alcance y Protección Ética**:
+  - Verificación estricta de dominios y subdominios autorizados (`Target.in_scope`).
+  - Rate limiting regulable (por defecto 2 peticiones/segundo).
+  - Confirmación obligatoria de autorización por escrito antes de emitir cualquier sondeo.
+- 🧪 **Batería Drástica de 56 Pruebas (94% Cobertura)**:
+  - Fuzzing basado en propiedades matemáticas con **Hypothesis**.
+  - Inyección de caos de red y tolerancia a fallos.
+  - Integración End-to-End real contra un laboratorio local vulnerable en vivo.
+- 📋 **Reportes Multi-Formato Automatizados**:
+  - `report.html`: Dashboard interactivo y visual autocontenido.
+  - `vulnerabilities.json`: Formato estándar para pipelines de CI/CD.
+  - `VULNERABILITIES.md`: Documento ejecutivo estructurado para crear issues directamente en GitHub o Jira.
 
 ---
 
-## 🏛️ Arquitectura del Sistema
+## 🏛️ Arquitectura del Proyecto
 
 ```mermaid
 flowchart TD
-    subgraph CLI ["🖥️ Capa de Interfaz y Control"]
-        cli["CLI Typer + Rich (websec)"]
-        config["ScanConfig (Rate Limit, Scope, Retries)"]
+    subgraph CLI ["🖥️ Capa de Interfaz y CLI"]
+        app["websec CLI (Typer + Rich)"]
+        config["ScanConfig (Rate Limit, Scope, Depth)"]
     end
 
-    subgraph Core ["⚙️ Núcleo del Auditor"]
+    subgraph Core ["⚙️ Núcleo del Escáner"]
         scanner["SecurityScanner (Orquestador)"]
-        http["SafeHttpClient (Scope Guard + Delays)"]
-        crawler["LightCrawler (Descubrimiento Seguro)"]
-        scorer["SecurityScorer (Algoritmo 0-100 A+)"]
+        http["SafeHttpClient (Scope Guard + Rate Limiter)"]
+        crawler["LightCrawler (Descubrimiento Ético)"]
+        scorer["SecurityScorer (Puntuación 0-100 A+)"]
     end
 
-    subgraph Modules ["🛡️ Catálogo de Módulos (17)"]
-        direction TB
-        subgraph Active ["Activos (Canarios Inocuos)"]
-            xss["XSS Reflected"]
-            sqli["SQLi Heuristic"]
-            cors["CORS Misconfig"]
-            redir["Open Redirect"]
-            csrf["CSRF Missing"]
-            files["Exposed Files (.git/.env)"]
+    subgraph Modules ["🛡️ Módulos de Seguridad (17)"]
+        subgraph ActiveMods ["Activos (Canarios Inocuos)"]
+            xss["xss"]
+            sqli["sqli"]
+            cors["cors"]
+            redir["open_redirect"]
+            csrf["csrf"]
+            files["exposed_files"]
+            subdom["subdomains"]
+            disc["content_discovery"]
+            meth["http_methods"]
+            click["clickjacking"]
         end
-        subgraph Passive ["Pasivos (Inspección Segura)"]
-            headers["Headers & CSP"]
-            tls["TLS / HTTPS"]
-            cookies["Cookies (Flags)"]
-            errors["Error Pages / Stack Traces"]
-            tech["Tech Fingerprinting & CVEs"]
+        subgraph PassiveMods ["Pasivos (Inspección Segura)"]
+            headers["headers"]
+            tls["tls"]
+            cookies["cookies"]
+            mixed["mixed_content"]
+            tech["tech_fingerprint"]
+            dns["dns_email"]
+            err["error_pages"]
         end
     end
 
-    subgraph Graph ["🧠 Grafo de Conocimiento"]
-        graphify["Graphify Knowledge Graph (graph.json / 499 nodos)"]
-        agent["Graph Security Tester Agent"]
-    end
-
-    subgraph Reports ["📊 Generación de Reportes"]
-        rep_html["report.html (Dashboard Interactivo)"]
+    subgraph Output ["📊 Salidas y Reportes"]
+        rep_html["report.html (Dashboard)"]
         rep_json["vulnerabilities.json (CI/CD)"]
-        rep_md["VULNERABILITIES.md (GitHub Issues)"]
+        rep_md["VULNERABILITIES.md (Tickets)"]
     end
 
-    cli --> scanner
+    app --> scanner
     config --> scanner
     scanner --> http
     scanner --> crawler
@@ -83,10 +93,8 @@ flowchart TD
     scanner --> Modules
     Modules --> http
     scanner --> scorer
-    scorer --> Reports
-    Modules --> Reports
-    Graph -.->|Mapeo Topológico| scanner
-    Graph -.->|Impact Analysis| agent
+    scorer --> Output
+    Modules --> Output
 ```
 
 ---
@@ -102,10 +110,10 @@ flowchart TD
 git clone https://github.com/14KD/web-sec.git
 cd web-sec
 
-# 2. Instalar el paquete en modo editable con herramientas de desarrollo
-pip install -e "./web test[dev]"
+# 2. Instalar el paquete en modo editable con herramientas de testeo
+pip install -e ".[dev]"
 
-# 3. Comprobar que la herramienta está lista
+# 3. Comprobar la instalación
 websec --version
 ```
 
@@ -113,136 +121,158 @@ websec --version
 
 ## 💻 Ejemplos de Uso
 
-### 1. Auditoría Completa con Confirmación Ética
+### 1. Auditoría Completa con Confirmación de Autorización
 ```bash
 websec scan https://mi-dominio.com --i-have-permission
 ```
-*(Si omites `--i-have-permission`, la herramienta solicitará confirmación interactiva antes de emitir cualquier petición).*
+*(Si no pasas `--i-have-permission`, la CLI te pedirá confirmación explícita e interactiva antes de comenzar).*
 
-### 2. Auditoría Focalizada en Módulos Críticos
+### 2. Escaneo Focalizado en Módulos Críticos
 ```bash
 websec scan https://mi-dominio.com --i-have-permission --modules headers,tls,xss,sqli,cors
 ```
 
-### 3. Ajuste de Velocidad Ética, Profundidad y Directorio de Salida
+### 3. Ajuste de Velocidad Ética, Profundidad y Directorio de Reportes
 ```bash
 websec scan https://mi-dominio.com \
   --i-have-permission \
   --rate-limit 2.0 \
   --depth 2 \
   --format console,json,html,md \
-  --output-dir ./mis_reportes
+  --output-dir ./reportes_auditoria
 ```
 
-### 4. Consultar el Catálogo de Módulos
+### 4. Consultar el Catálogo Completo de Módulos
 ```bash
 websec list-modules
 ```
+
+### 5. Verificar Base de Datos de CVEs y Componentes
+```bash
+websec update-db
+```
+
+---
+
+## 🔍 Catálogo de Módulos (17)
+
+### Módulos Pasivos (Inspección Segura)
+| Módulo | Tipo | Descripción |
+| :--- | :---: | :--- |
+| `headers` | Pasivo | Audita cabeceras esenciales (CSP, HSTS, X-Frame-Options, Referrer-Policy, etc.). |
+| `tls` | Pasivo | Inspecciona redirección HTTPS, validez de certificados y protocolos TLS. |
+| `cookies` | Pasivo | Verifica flags de seguridad (`Secure`, `HttpOnly`, `SameSite`) en cookies de sesión. |
+| `mixed_content` | Pasivo | Detecta recursos HTTP en páginas HTTPS y valida Subresource Integrity (SRI). |
+| `tech_fingerprint` | Pasivo | Identifica servidores, frameworks y librerías contrastando con la base local de CVEs. |
+| `dns_email` | Pasivo | Audita registros DNS defensivos: SPF, DMARC y CAA. |
+| `error_pages` | Pasivo | Detecta fugas de rutas locales y mensajes con trazas de depuración (Stack Traces). |
+
+### Módulos Activos (Detección con Canarios Inocuos)
+| Módulo | Tipo | Descripción |
+| :--- | :---: | :--- |
+| `xss` | Activo | Inyecta marcadores canarios aleatorios (`wsa_xss_<id>`) para detectar reflejo sin codificar. |
+| `sqli` | Activo | Sondeo heurístico de sintaxis SQL (MySQL, PostgreSQL, Oracle, SQLite, MSSQL). |
+| `open_redirect` | Activo | Prueba parámetros de redirección (`?url=`, `?next=`) con URL de control externa segura. |
+| `cors` | Activo | Detecta reflejo arbitrario de `Origin` o `null` con credenciales habilitadas. |
+| `clickjacking` | Activo | Evalúa si la página permite enmarcado no autorizado en `<iframe>`. |
+| `csrf` | Activo | Detecta formularios POST/PUT/DELETE que carecen de tokens de protección anti-CSRF. |
+| `exposed_files` | Activo | Comprueba exposición de archivos críticos (`.git/HEAD`, `.env`, backups, etc.). |
+| `content_discovery` | Activo | Mapeo ético y controlado de rutas comunes mediante wordlist ligera integrada. |
+| `subdomains` | Activo | Descubrimiento pasivo vía Certificate Transparency (crt.sh) y verificación DNS. |
+| `http_methods` | Activo | Consulta métodos HTTP habilitados mediante `OPTIONS` (TRACE, PUT, DELETE). |
 
 ---
 
 ## 🧪 Batería de Pruebas Drásticas
 
-WebSec Auditor cuenta con una arquitectura de pruebas rigurosa dividida en 4 capas de validación:
+El proyecto implementa un estándar riguroso de calidad y seguridad con **56 pruebas** automatizadas:
 
 ```
 tests/
-├── test_fuzz_properties.py     # 🔬 Fuzzing y pruebas basadas en propiedades (Hypothesis)
+├── test_fuzz_properties.py     # 🔬 Pruebas basadas en propiedades con Hypothesis
 ├── test_chaos_resilience.py    # 💥 Inyección de caos de red y tolerancia a fallos
 ├── test_e2e_lab.py             # 🎯 Integración End-to-End contra el laboratorio vulnerable
-├── test_graph_driven.py        # 🧠 Validación arquitectónica contra el grafo de conocimiento
-└── test_*.py                   # 🛡️ 40 pruebas unitarias con mocks de respx
+├── test_cli.py                 # 🖥️ Pruebas completas de interfaz de comandos
+└── test_*.py                   # 🛡️ 40 pruebas unitarias con mocks HTTP (respx)
 ```
 
-### Comandos de Ejecución
+### Ejecutar las Pruebas
 
 ```bash
-# Ejecutar la suite completa de 56 tests con reporte de cobertura
-pytest "web test/tests" -v --cov=websec
+# Ejecutar la suite completa con cobertura
+pytest -v --cov=websec
 
-# 1. Ejecutar pruebas basadas en propiedades (Fuzzing)
-pytest "web test/tests/test_fuzz_properties.py"
+# 1. Pruebas de Fuzzing Matemático (Hypothesis)
+pytest tests/test_fuzz_properties.py
 
-# 2. Ejecutar pruebas de ingeniería de caos
-pytest "web test/tests/test_chaos_resilience.py"
+# 2. Pruebas de Caos y Tolerancia a Fallos
+pytest tests/test_chaos_resilience.py
 
-# 3. Ejecutar integración E2E contra el laboratorio local en vivo
-pytest "web test/tests/test_e2e_lab.py"
-
-# 4. Ejecutar validaciones arquitectónicas guiadas por el grafo
-pytest "web test/tests/test_graph_driven.py"
+# 3. Prueba End-to-End en Vivo contra el Laboratorio Real
+pytest tests/test_e2e_lab.py
 ```
-
----
-
-## 🧠 Grafo de Conocimiento con Graphify
-
-El proyecto mantiene un grafo de conocimiento AST sincronizado en [`graphify-out/`](graphify-out/):
-
-- **499 Nodos**: Clases, funciones, modelos, módulos de seguridad y tests.
-- **1,533 Aristas**: Llamadas, herencias, importaciones y flujo de datos.
-- **32 Comunidades**: Agrupaciones semánticas de código detectadas por conectividad.
-
-### Comandos de Navegación del Grafo
-
-```bash
-# Consultar arquitectura o relaciones directamente en lenguaje natural
-graphify query "how does SecurityScanner coordinate modules and SafeHttpClient?"
-
-# Encontrar el camino de dependencias más corto entre dos componentes
-graphify path "SecurityScanner" "Finding"
-
-# Inspeccionar los detalles de un nodo específico y sus vecinos
-graphify explain "SafeHttpClient"
-
-# Abrir el visualizador interactivo 3D del grafo en el navegador
-# Abre el archivo: graphify-out/graph.html
-```
-
----
-
-## 🤖 Ecosistema de Agentes y Skills
-
-El proyecto integra skills para agentes de Inteligencia Artificial en [.agents/skills/](.agents/skills/):
-
-- 🧠 **`graph-security-tester`**: Skill nativa que guía a agentes autónomos en la exploración topológica del grafo y coordinación de tests drásticos.
-- 🐍 **`python-testing-patterns`**: Patrones avanzados de pruebas con `pytest`, fixtures de sesión y testing paramétrico.
-- 🎯 **`web-app-penetration-testing`**: Metodología guiada para detección no destructiva de vectores de ataque.
-- 🛡️ **`owasp-top-10-testing`**: Cobertura alineada con las categorías OWASP Top 10:2025.
 
 ---
 
 ## 🧪 Laboratorio Vulnerable Local
 
-El proyecto incluye una aplicación web Flask deliberadamente vulnerable en [`web test/lab/app.py`](web%20test/lab/app.py) para evaluar el comportamiento del escáner en un entorno seguro y controlado:
+Para realizar pruebas prácticas de forma 100% segura y controlada sin apuntar a la red pública:
 
 ```bash
-# Terminal 1: Iniciar el laboratorio local
-python "web test/lab/app.py"
+# Terminal 1: Iniciar el servidor local intencionalmente vulnerable
+python lab/app.py
 
-# Terminal 2: Auditar el laboratorio
+# Terminal 2: Ejecutar la auditoría
 websec scan http://127.0.0.1:5000 --i-have-permission
 ```
 
-El escáner detectará automáticamente:
+El auditor detectará automáticamente todas las vulnerabilidades programadas:
 - Reflected XSS en `/search?q=test`
-- SQLi Error Heuristic en `/product?id=1`
-- Open Redirect en `/redirect?url=...`
-- CORS inseguro con credenciales en `/api/user`
-- Cookies de sesión desprotegidas en `/login`
-- Formularios sin token CSRF en `/settings`
-- Fuga de información en `/.git/HEAD` y `/.env`
-- Divulgación de depuración y stack traces en `/debug-error`
+- Fuga de error de sintaxis SQL en `/product?id=1`
+- Redirección abierta en `/redirect?url=...`
+- CORS permisivo con credenciales en `/api/user`
+- Cookies de sesión sin HttpOnly ni Secure en `/login`
+- Formulario sensible sin token anti-CSRF en `/settings`
+- Fuga de archivos confidenciales (`.git/HEAD`, `.env`)
+- Exposición de trazas internas en `/debug-error`
 
 ---
 
-## ⚖️ Directrices Éticas y de Seguridad
+## 📊 Reportes Generados
 
-> [!IMPORTANT]
-> WebSec Auditor fue creado exclusivamente con propósitos de defensa, auditoría autorizada y educación. Las pruebas activas no envían exploits destructivos; únicamente emplean marcadores canarios de diagnóstico. El usuario es responsable de contar con la autorización explícita y por escrito de los propietarios del objetivo antes de ejecutar cualquier análisis.
+Al finalizar cada auditoría, los reportes se crean automáticamente en `reports/<dominio>-<timestamp>/`:
+
+1. **`report.html`**: Tablero visual autocontenido con gráficos, calificación (A+ a F), puntuación de 0 a 100 y filtros dinámicos.
+2. **`vulnerabilities.json`**: Estructura normalizada de vulnerabilidades para ingesta en sistemas de tickets, SIEM o CI/CD.
+3. **`VULNERABILITIES.md`**: Informe estructurado con impacto, evidencia detallada y recomendaciones paso a paso para mitigación.
+
+---
+
+## ⚠️ Reglas Éticas Obligatorias
+
+1. **Autorización Previa**: Utiliza esta herramienta únicamente en dominios propios o donde cuentes con permiso por escrito del propietario.
+2. **Pruebas No Destructivas**: Ningún módulo intenta explotar vulnerabilidades, degradar servicios ni extraer datos privados.
+3. **Límite de Tasa Responsable**: Respeta la disponibilidad de los servidores analizados aplicando límites de peticiones prudentes.
+
+---
+
+## 📁 Estructura del Repositorio
+
+```
+web-sec/
+├── .github/workflows/ci.yml     # Pipeline automatizado de integración continua
+├── docs/                        # Documentación técnica de arquitectura y módulos
+├── examples/                    # Ejemplos de uso programático
+├── lab/                         # Aplicación Flask deliberadamente vulnerable
+├── src/websec/                  # Código fuente del motor auditor y catálogo de módulos
+├── tests/                       # Suite de 56 pruebas (Fuzzing, Caos, E2E y Unitarias)
+├── pyproject.toml               # Configuración de empaquetado y dependencias
+├── README.md                    # Documentación principal del proyecto
+└── LICENSE                      # Licencia MIT
+```
 
 ---
 
 ## 📄 Licencia
 
-Este proyecto está bajo la Licencia **MIT**. Consulta el archivo [LICENSE](web%20test/LICENSE) para más detalles.
+Este proyecto está distribuido bajo la **Licencia MIT**. Consulta el archivo [LICENSE](LICENSE) para más detalles.
