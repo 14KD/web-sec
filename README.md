@@ -37,33 +37,51 @@ Combina inspección pasiva con sondas activas inocuas (marcadores canario) y gen
 
 ```mermaid
 flowchart TD
-    subgraph CLI ["🖥️ CLI"]
-        app["websec (Typer + Rich)"]
-        config["ScanConfig"]
-    end
+    user(["👤 Usuario"]) -->|"websec scan URL"| cli
 
-    subgraph Core ["⚙️ Núcleo"]
-        scanner["SecurityScanner<br/>(orquestador)"]
-        http["SafeHttpClient<br/>(alcance + rate limit)"]
-        crawler["LightCrawler"]
-        scorer["SecurityScorer<br/>(0-100, A+ a F)"]
+    subgraph sgCli ["🖥️ CLI · cli.py"]
+        cli["Typer + Rich"]
+        perm{"¿--i-have-permission<br/>o confirmación?"}
+        cfg["ScanConfig<br/>alcance · rate limit · profundidad"]
+        cli --> perm
+        perm -->|"sí"| cfg
     end
+    perm -->|"no"| stop(["⛔ Escaneo cancelado"])
 
-    subgraph Modules ["🛡️ Módulos (17)"]
-        passive["7 pasivos"]
-        active["10 activos"]
+    subgraph sgCore ["⚙️ Núcleo · SecurityScanner.run()"]
+        crawler["1 · LightCrawler<br/>rastrea páginas y formularios"]
+        mods["2 · Módulos seleccionados"]
+        scorer["3 · SecurityScorer<br/>puntuación 0-100 · A+ a F"]
+        crawler -->|"páginas rastreadas"| mods
+        mods -->|"hallazgos"| scorer
     end
+    cfg --> crawler
 
-    subgraph Output ["📊 Reportes"]
-        out["consola · report.html · report.json<br/>vulnerabilities.json · VULNERABILITIES.md"]
+    subgraph sgCatalog ["🛡️ 17 módulos"]
+        passive["7 pasivos<br/>headers · tls · cookies · mixed_content<br/>tech_fingerprint · dns_email · error_pages"]
+        active["10 activos con canarios inocuos<br/>xss · sqli · cors · csrf · open_redirect<br/>clickjacking · exposed_files · content_discovery<br/>subdomains · http_methods"]
     end
+    mods -.- sgCatalog
 
-    app --> config --> scanner
-    scanner --> crawler --> http
-    scanner --> Modules --> http
-    scanner --> scorer --> Output
-    Modules --> Output
+    http["🔒 SafeHttpClient<br/>Target.in_scope · rate limit · reintentos"]
+    site[("🌐 Sitio autorizado")]
+    crawler --> http
+    mods --> http
+    http --> site
+
+    scorer --> result["ScanResult"]
+
+    subgraph sgReports ["📊 Reportes en reports/dominio-fecha/"]
+        r1["Consola"]
+        r2["report.html"]
+        r3["report.json"]
+        r4["vulnerabilities.json"]
+        r5["VULNERABILITIES.md"]
+    end
+    result --> sgReports
 ```
+
+**Flujo:** la CLI exige confirmar la autorización antes de crear la configuración. `SecurityScanner` rastrea el sitio, ejecuta los módulos sobre las páginas rastreadas y calcula la puntuación. Todo el tráfico, tanto del crawler como de los módulos, pasa por `SafeHttpClient`, que bloquea lo que esté fuera de alcance y limita la velocidad. Con el `ScanResult` final, la CLI genera los reportes.
 
 Más detalle en [docs/architecture.md](docs/architecture.md) y [docs/modules.md](docs/modules.md).
 
