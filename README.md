@@ -2,277 +2,279 @@
 
 <div align="center">
 
-[![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-3776AB.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![Tests](https://img.shields.io/badge/Tests-56%20Passed-10B981.svg?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/)
-[![Coverage](https://img.shields.io/badge/Coverage-94%25-06B6D4.svg?style=for-the-badge&logo=codecov&logoColor=white)](#-batería-de-pruebas-drásticas)
-[![OWASP](https://img.shields.io/badge/OWASP-Top%2010%20Aligned-F59E0B.svg?style=for-the-badge&logo=owasp&logoColor=white)](https://owasp.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-6366F1.svg?style=for-the-badge)](LICENSE)
+[![CI](https://github.com/14KD/web-sec/actions/workflows/ci.yml/badge.svg)](https://github.com/14KD/web-sec/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
+[![Tests](https://img.shields.io/badge/tests-67-10B981.svg?logo=pytest&logoColor=white)](#-pruebas)
+[![Coverage](https://img.shields.io/badge/coverage-96%25-06B6D4.svg)](#-pruebas)
+[![OWASP](https://img.shields.io/badge/OWASP-Top%2010-F59E0B.svg?logo=owasp&logoColor=white)](https://owasp.org/www-project-top-ten/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-6366F1.svg)](LICENSE)
 
-<p align="center">
-  <b>Herramienta profesional de auditoría de seguridad web ética, no destructiva y modular.</b><br>
-  Diseñada para evaluar la postura defensiva de aplicaciones web mediante análisis activo con canarios inocuos, inspección pasiva exhaustiva y generación de reportes listos para remediación.
-</p>
+**Escáner de seguridad web ético, no destructivo y modular, escrito en Python.**
 
-[Instalación](#-instalación-rápida) • [Uso de la CLI](#-ejemplos-de-uso) • [Catálogo de Módulos](#-catálogo-de-módulos-17) • [Pruebas Drásticas](#-batería-de-pruebas-drásticas) • [Laboratorio Local](#-laboratorio-vulnerable-local) • [Reportes](#-reportes-generados) • [Ética](#-reglas-éticas-obligatorias)
+Combina inspección pasiva con sondas activas inocuas (marcadores canario) y genera reportes listos para remediar: consola, HTML, JSON y Markdown.
+
+[Instalación](#-instalación) • [Uso](#-uso) • [Módulos](#-módulos-17) • [Reportes](#-reportes) • [Laboratorio](#-laboratorio-vulnerable-local) • [Pruebas](#-pruebas) • [Ética](#%EF%B8%8F-uso-ético)
 
 </div>
 
----
-
-## 🌟 Características Principales
-
-- 🎯 **17 Módulos de Auditoría Especializados**:
-  - **Pruebas Activas No Destructivas**: Inyección de marcadores canarios únicos (XSS, SQLi Heuristic, Open Redirect, CORS Misconfigurations, Clickjacking, Formularios CSRF, Archivos Expuestos, Enumeración de Subdominios y Content Discovery).
-  - **Análisis Pasivo Silencioso**: Inspección de cabeceras de seguridad (CSP, HSTS, X-Frame-Options), cookies con flags (`HttpOnly`, `Secure`, `SameSite`), Mixed Content & SRI, fingerprinting de tecnologías con cotejo de CVEs locales, registros DNS (SPF, DMARC, CAA) y detección de trazas de depuración (Stack Traces).
-- 🛡️ **Control de Alcance y Protección Ética**:
-  - Verificación estricta de dominios y subdominios autorizados (`Target.in_scope`).
-  - Rate limiting regulable (por defecto 2 peticiones/segundo).
-  - Confirmación obligatoria de autorización por escrito antes de emitir cualquier sondeo.
-- 🧪 **Batería Drástica de 56 Pruebas (94% Cobertura)**:
-  - Fuzzing basado en propiedades matemáticas con **Hypothesis**.
-  - Inyección de caos de red y tolerancia a fallos.
-  - Integración End-to-End real contra un laboratorio local vulnerable en vivo.
-- 📋 **Reportes Multi-Formato Automatizados**:
-  - `report.html`: Dashboard interactivo y visual autocontenido.
-  - `vulnerabilities.json`: Formato estándar para pipelines de CI/CD.
-  - `VULNERABILITIES.md`: Documento ejecutivo estructurado para crear issues directamente en GitHub o Jira.
+> [!WARNING]
+> Usa esta herramienta **solo** contra sistemas propios o con autorización escrita del propietario. Escanear sistemas ajenos sin permiso puede ser ilegal. Lee [ETHICS.md](ETHICS.md) antes de empezar.
 
 ---
 
-## 🏛️ Arquitectura del Proyecto
+## ✨ Características
+
+- **17 módulos**: 7 pasivos y 10 activos, cubriendo cabeceras, TLS, cookies, XSS, SQLi, CORS, CSRF, redirecciones abiertas, archivos expuestos y más.
+- **No destructivo**: las pruebas activas usan marcadores únicos e inofensivos (por ejemplo `wsa_xss_<id>`); ningún módulo explota vulnerabilidades ni extrae datos.
+- **Control de alcance estricto**: cada petición pasa por `Target.in_scope`, que bloquea otros dominios, dominios parecidos y esquemas no HTTP. Los subdominios solo entran con `--allow-subdomains`.
+- **Tráfico limitado**: 2 peticiones por segundo por defecto, con reintentos y timeouts configurables.
+- **Puntuación de 0 a 100** con calificación de A+ a F.
+- **Reportes** en consola (Rich), HTML interactivo, JSON y Markdown para crear issues.
+
+---
+
+## 🏛️ Arquitectura
 
 ```mermaid
 flowchart TD
-    subgraph CLI ["🖥️ Capa de Interfaz y CLI"]
-        app["websec CLI (Typer + Rich)"]
-        config["ScanConfig (Rate Limit, Scope, Depth)"]
+    subgraph CLI ["🖥️ CLI"]
+        app["websec (Typer + Rich)"]
+        config["ScanConfig"]
     end
 
-    subgraph Core ["⚙️ Núcleo del Escáner"]
-        scanner["SecurityScanner (Orquestador)"]
-        http["SafeHttpClient (Scope Guard + Rate Limiter)"]
-        crawler["LightCrawler (Descubrimiento Ético)"]
-        scorer["SecurityScorer (Puntuación 0-100 A+)"]
+    subgraph Core ["⚙️ Núcleo"]
+        scanner["SecurityScanner<br/>(orquestador)"]
+        http["SafeHttpClient<br/>(alcance + rate limit)"]
+        crawler["LightCrawler"]
+        scorer["SecurityScorer<br/>(0-100, A+ a F)"]
     end
 
-    subgraph Modules ["🛡️ Módulos de Seguridad (17)"]
-        subgraph ActiveMods ["Activos (Canarios Inocuos)"]
-            xss["xss"]
-            sqli["sqli"]
-            cors["cors"]
-            redir["open_redirect"]
-            csrf["csrf"]
-            files["exposed_files"]
-            subdom["subdomains"]
-            disc["content_discovery"]
-            meth["http_methods"]
-            click["clickjacking"]
-        end
-        subgraph PassiveMods ["Pasivos (Inspección Segura)"]
-            headers["headers"]
-            tls["tls"]
-            cookies["cookies"]
-            mixed["mixed_content"]
-            tech["tech_fingerprint"]
-            dns["dns_email"]
-            err["error_pages"]
-        end
+    subgraph Modules ["🛡️ Módulos (17)"]
+        passive["7 pasivos"]
+        active["10 activos"]
     end
 
-    subgraph Output ["📊 Salidas y Reportes"]
-        rep_html["report.html (Dashboard)"]
-        rep_json["vulnerabilities.json (CI/CD)"]
-        rep_md["VULNERABILITIES.md (Tickets)"]
+    subgraph Output ["📊 Reportes"]
+        out["consola · report.html · report.json<br/>vulnerabilities.json · VULNERABILITIES.md"]
     end
 
-    app --> scanner
-    config --> scanner
-    scanner --> http
-    scanner --> crawler
-    crawler --> http
-    scanner --> Modules
-    Modules --> http
-    scanner --> scorer
-    scorer --> Output
+    app --> config --> scanner
+    scanner --> crawler --> http
+    scanner --> Modules --> http
+    scanner --> scorer --> Output
     Modules --> Output
 ```
 
+Más detalle en [docs/architecture.md](docs/architecture.md) y [docs/modules.md](docs/modules.md).
+
 ---
 
-## 🚀 Instalación Rápida
+## 🚀 Instalación
 
-### Requisitos Previos
-- **Python 3.11** o superior
-- Administrador de paquetes `pip`
+Requisitos: **Python 3.11 o superior** y `pip`.
 
 ```bash
-# 1. Clonar el repositorio
 git clone https://github.com/14KD/web-sec.git
 cd web-sec
 
-# 2. Instalar el paquete en modo editable con herramientas de testeo
+# Instalación normal
+pip install -e .
+
+# O con las herramientas de desarrollo (pytest, hypothesis, respx, flask para el laboratorio)
 pip install -e ".[dev]"
 
-# 3. Comprobar la instalación
 websec --version
 ```
 
 ---
 
-## 💻 Ejemplos de Uso
+## 💻 Uso
 
-### 1. Auditoría Completa con Confirmación de Autorización
+### Auditoría completa
+
 ```bash
 websec scan https://mi-dominio.com --i-have-permission
 ```
-*(Si no pasas `--i-have-permission`, la CLI te pedirá confirmación explícita e interactiva antes de comenzar).*
 
-### 2. Escaneo Focalizado en Módulos Críticos
+Si omites `--i-have-permission`, la CLI pide confirmación interactiva y cancela el escaneo si respondes que no.
+
+### Solo algunos módulos
+
 ```bash
-websec scan https://mi-dominio.com --i-have-permission --modules headers,tls,xss,sqli,cors
+websec scan https://mi-dominio.com --i-have-permission -m headers,tls,xss,sqli,cors
 ```
 
-### 3. Ajuste de Velocidad Ética, Profundidad y Directorio de Reportes
+### Ajustar velocidad, profundidad y salida
+
 ```bash
 websec scan https://mi-dominio.com \
   --i-have-permission \
-  --rate-limit 2.0 \
-  --depth 2 \
-  --format console,json,html,md \
-  --output-dir ./reportes_auditoria
+  --rate-limit 1.0 \
+  --depth 1 \
+  --timeout 15 \
+  --format console,html \
+  --output-dir ./reportes
 ```
 
-### 4. Consultar el Catálogo Completo de Módulos
+### Otros comandos
+
 ```bash
-websec list-modules
+websec list-modules   # Lista los 17 módulos disponibles
+websec update-db      # Verifica la base local de componentes vulnerables (no descarga nada)
 ```
 
-### 5. Verificar Base de Datos de CVEs y Componentes
-```bash
-websec update-db
-```
+### Opciones de `websec scan`
+
+| Opción | Corta | Defecto | Descripción |
+| :--- | :---: | :---: | :--- |
+| `--i-have-permission` | | `false` | Confirma que tienes autorización escrita. Sin ella, se pide confirmación. |
+| `--modules` | `-m` | todos | Módulos separados por comas. |
+| `--depth` | `-d` | `2` | Profundidad de rastreo (0 a 5). |
+| `--rate-limit` | `-r` | `2.0` | Peticiones por segundo (0.1 a 50). |
+| `--format` | `-f` | `console,json,html,md` | Formatos de salida. |
+| `--output-dir` | `-o` | `reports/<dominio>-<fecha>/` | Carpeta de los reportes. |
+| `--allow-subdomains` | | `false` | Incluye subdominios del objetivo en el alcance. |
+| `--timeout` | | `10.0` | Segundos de espera por petición. |
+
+### Uso desde Python
+
+Consulta [examples/sample_scan.py](examples/sample_scan.py): crea un `ScanConfig`, registra los módulos en `SecurityScanner` y llama a `run()`.
 
 ---
 
-## 🔍 Catálogo de Módulos (17)
+## 🔍 Módulos (17)
 
-### Módulos Pasivos (Inspección Segura)
-| Módulo | Tipo | Descripción |
-| :--- | :---: | :--- |
-| `headers` | Pasivo | Audita cabeceras esenciales (CSP, HSTS, X-Frame-Options, Referrer-Policy, etc.). |
-| `tls` | Pasivo | Inspecciona redirección HTTPS, validez de certificados y protocolos TLS. |
-| `cookies` | Pasivo | Verifica flags de seguridad (`Secure`, `HttpOnly`, `SameSite`) en cookies de sesión. |
-| `mixed_content` | Pasivo | Detecta recursos HTTP en páginas HTTPS y valida Subresource Integrity (SRI). |
-| `tech_fingerprint` | Pasivo | Identifica servidores, frameworks y librerías contrastando con la base local de CVEs. |
-| `dns_email` | Pasivo | Audita registros DNS defensivos: SPF, DMARC y CAA. |
-| `error_pages` | Pasivo | Detecta fugas de rutas locales y mensajes con trazas de depuración (Stack Traces). |
+### Pasivos (solo leen las respuestas)
 
-### Módulos Activos (Detección con Canarios Inocuos)
-| Módulo | Tipo | Descripción |
-| :--- | :---: | :--- |
-| `xss` | Activo | Inyecta marcadores canarios aleatorios (`wsa_xss_<id>`) para detectar reflejo sin codificar. |
-| `sqli` | Activo | Sondeo heurístico de sintaxis SQL (MySQL, PostgreSQL, Oracle, SQLite, MSSQL). |
-| `open_redirect` | Activo | Prueba parámetros de redirección (`?url=`, `?next=`) con URL de control externa segura. |
-| `cors` | Activo | Detecta reflejo arbitrario de `Origin` o `null` con credenciales habilitadas. |
-| `clickjacking` | Activo | Evalúa si la página permite enmarcado no autorizado en `<iframe>`. |
-| `csrf` | Activo | Detecta formularios POST/PUT/DELETE que carecen de tokens de protección anti-CSRF. |
-| `exposed_files` | Activo | Comprueba exposición de archivos críticos (`.git/HEAD`, `.env`, backups, etc.). |
-| `content_discovery` | Activo | Mapeo ético y controlado de rutas comunes mediante wordlist ligera integrada. |
-| `subdomains` | Activo | Descubrimiento pasivo vía Certificate Transparency (crt.sh) y verificación DNS. |
-| `http_methods` | Activo | Consulta métodos HTTP habilitados mediante `OPTIONS` (TRACE, PUT, DELETE). |
+| Módulo | Qué revisa |
+| :--- | :--- |
+| `headers` | Cabeceras de seguridad: CSP, HSTS, X-Frame-Options, Referrer-Policy, etc. |
+| `tls` | Redirección a HTTPS, certificado y versión de TLS. |
+| `cookies` | Flags `Secure`, `HttpOnly` y `SameSite`. |
+| `mixed_content` | Recursos HTTP en páginas HTTPS y Subresource Integrity (SRI). |
+| `tech_fingerprint` | Servidores, frameworks y librerías, cruzados con una base local de CVEs. |
+| `dns_email` | Registros SPF, DMARC y CAA. |
+| `error_pages` | Trazas de depuración y rutas internas en páginas de error. |
 
----
+### Activos (envían sondas inocuas)
 
-## 🧪 Batería de Pruebas Drásticas
-
-El proyecto implementa un estándar riguroso de calidad y seguridad con **56 pruebas** automatizadas:
-
-```
-tests/
-├── test_fuzz_properties.py     # 🔬 Pruebas basadas en propiedades con Hypothesis
-├── test_chaos_resilience.py    # 💥 Inyección de caos de red y tolerancia a fallos
-├── test_e2e_lab.py             # 🎯 Integración End-to-End contra el laboratorio vulnerable
-├── test_cli.py                 # 🖥️ Pruebas completas de interfaz de comandos
-└── test_*.py                   # 🛡️ 40 pruebas unitarias con mocks HTTP (respx)
-```
-
-### Ejecutar las Pruebas
-
-```bash
-# Ejecutar la suite completa con cobertura
-pytest -v --cov=websec
-
-# 1. Pruebas de Fuzzing Matemático (Hypothesis)
-pytest tests/test_fuzz_properties.py
-
-# 2. Pruebas de Caos y Tolerancia a Fallos
-pytest tests/test_chaos_resilience.py
-
-# 3. Prueba End-to-End en Vivo contra el Laboratorio Real
-pytest tests/test_e2e_lab.py
-```
+| Módulo | Qué revisa |
+| :--- | :--- |
+| `xss` | Reflejo sin codificar de un marcador en parámetros y formularios GET. |
+| `sqli` | Mensajes de error SQL (MySQL, PostgreSQL, Oracle, SQLite, MSSQL) ante caracteres de sintaxis. |
+| `open_redirect` | Parámetros como `?url=` o `?next=` que redirigen a dominios externos. |
+| `cors` | `Origin` arbitrario o `null` reflejado con credenciales habilitadas. |
+| `clickjacking` | Páginas que se pueden incrustar en un `<iframe>`. |
+| `csrf` | Formularios POST, PUT o DELETE sin token anti-CSRF. |
+| `exposed_files` | Archivos sensibles accesibles (`.git/HEAD`, `.env`, copias de seguridad). |
+| `content_discovery` | Rutas comunes a partir de una lista de palabras pequeña. |
+| `subdomains` | Subdominios vía Certificate Transparency (consulta a crt.sh) y DNS. |
+| `http_methods` | Métodos habilitados (TRACE, PUT, DELETE) mediante `OPTIONS`. |
 
 ---
 
-## 🧪 Laboratorio Vulnerable Local
+## 📊 Reportes
 
-Para realizar pruebas prácticas de forma 100% segura y controlada sin apuntar a la red pública:
+Se guardan en `reports/<dominio>-<fecha>/`, o en la carpeta que indiques con `--output-dir`:
+
+| Archivo | Cuándo se genera | Contenido |
+| :--- | :--- | :--- |
+| `report.html` | Con `--format html` | Panel autocontenido con puntuación, gráficos y filtros. |
+| `report.json` | Con `--format json` | Resultado completo del escaneo. |
+| `vulnerabilities.json` | Siempre | Lista plana de hallazgos para CI/CD o SIEM. |
+| `VULNERABILITIES.md` | Siempre | Hallazgos agrupados por severidad, listos para issues de GitHub o Jira. |
+
+La salida en consola se muestra con `--format console`.
+
+---
+
+## 🧪 Laboratorio vulnerable local
+
+`lab/app.py` es una aplicación Flask **intencionalmente vulnerable** para practicar sin tocar sistemas reales. Solo escucha en `127.0.0.1`.
 
 ```bash
-# Terminal 1: Iniciar el servidor local intencionalmente vulnerable
+# Terminal 1 (requiere flask: pip install -r lab/requirements.txt)
 python lab/app.py
 
-# Terminal 2: Ejecutar la auditoría
+# Terminal 2
 websec scan http://127.0.0.1:5000 --i-have-permission
 ```
 
-El auditor detectará automáticamente todas las vulnerabilidades programadas:
-- Reflected XSS en `/search?q=test`
-- Fuga de error de sintaxis SQL en `/product?id=1`
-- Redirección abierta en `/redirect?url=...`
-- CORS permisivo con credenciales en `/api/user`
-- Cookies de sesión sin HttpOnly ni Secure en `/login`
-- Formulario sensible sin token anti-CSRF en `/settings`
-- Fuga de archivos confidenciales (`.git/HEAD`, `.env`)
-- Exposición de trazas internas en `/debug-error`
+Vulnerabilidades incluidas:
+
+| Ruta | Vulnerabilidad |
+| :--- | :--- |
+| `/search?q=` | XSS reflejado |
+| `/product?id=` | Error de sintaxis SQL expuesto |
+| `/redirect?url=` | Redirección abierta |
+| `/api/user` | CORS permisivo con credenciales |
+| `/login` | Cookie de sesión sin `Secure` ni `HttpOnly` |
+| `/settings` | Formulario POST sin token CSRF |
+| `/.git/HEAD`, `/.env` | Archivos sensibles expuestos |
+| `/debug-error` | Traza de depuración visible |
+
+La prueba `tests/test_e2e_lab.py` levanta este laboratorio y verifica que el escáner detecta XSS, SQLi, CORS, CSRF, cookies y páginas de error, con una calificación de C o peor.
 
 ---
 
-## 📊 Reportes Generados
+## 🧪 Pruebas
 
-Al finalizar cada auditoría, los reportes se crean automáticamente en `reports/<dominio>-<timestamp>/`:
+67 pruebas con 96% de cobertura. El CI las ejecuta en Python 3.11, 3.12 y 3.13.
 
-1. **`report.html`**: Tablero visual autocontenido con gráficos, calificación (A+ a F), puntuación de 0 a 100 y filtros dinámicos.
-2. **`vulnerabilities.json`**: Estructura normalizada de vulnerabilidades para ingesta en sistemas de tickets, SIEM o CI/CD.
-3. **`VULNERABILITIES.md`**: Informe estructurado con impacto, evidencia detallada y recomendaciones paso a paso para mitigación.
+```
+tests/
+├── test_security_properties.py  # Propiedades de seguridad con Hypothesis (alcance, esquemas, puntuación)
+├── test_fuzz_properties.py      # Fuzzing de puntuación, alcance, serialización y parsing HTML
+├── test_chaos_resilience.py     # Fallos de red: TCP RST, bucles de redirección, timeouts, respuestas enormes
+├── test_e2e_lab.py              # Escaneo real contra el laboratorio Flask
+├── test_cli.py                  # Comandos de la CLI
+├── test_graph_driven.py         # Auditoría con graphify (se omite si no existe graphify-out/graph.json)
+└── test_<módulo>.py             # Pruebas unitarias por módulo con mocks HTTP (respx)
+```
+
+```bash
+pytest --cov=websec                       # Suite completa con cobertura
+pytest tests/test_security_properties.py  # Solo propiedades de seguridad
+pytest tests/test_e2e_lab.py              # Solo la prueba contra el laboratorio
+```
 
 ---
 
-## ⚠️ Reglas Éticas Obligatorias
+## ⚖️ Uso ético
 
-1. **Autorización Previa**: Utiliza esta herramienta únicamente en dominios propios o donde cuentes con permiso por escrito del propietario.
-2. **Pruebas No Destructivas**: Ningún módulo intenta explotar vulnerabilidades, degradar servicios ni extraer datos privados.
-3. **Límite de Tasa Responsable**: Respeta la disponibilidad de los servidores analizados aplicando límites de peticiones prudentes.
+1. **Autorización previa**: solo dominios propios o con permiso escrito del propietario.
+2. **Sin daño**: ningún módulo explota fallos, degrada servicios ni extrae datos privados.
+3. **Tráfico moderado**: respeta los límites de peticiones y no los subas sin motivo.
+
+Consulta [ETHICS.md](ETHICS.md) y [docs/ethical_guidelines.md](docs/ethical_guidelines.md).
 
 ---
 
-## 📁 Estructura del Repositorio
+## 📁 Estructura
 
 ```
 web-sec/
-├── .github/workflows/ci.yml     # Pipeline automatizado de integración continua
-├── docs/                        # Documentación técnica de arquitectura y módulos
-├── examples/                    # Ejemplos de uso programático
-├── lab/                         # Aplicación Flask deliberadamente vulnerable
-├── src/websec/                  # Código fuente del motor auditor y catálogo de módulos
-├── tests/                       # Suite de 56 pruebas (Fuzzing, Caos, E2E y Unitarias)
-├── pyproject.toml               # Configuración de empaquetado y dependencias
-├── README.md                    # Documentación principal del proyecto
-└── LICENSE                      # Licencia MIT
+├── .github/workflows/ci.yml   # CI: pruebas en Python 3.11-3.13
+├── docs/                      # Arquitectura, módulos, guía ética y página web
+├── examples/                  # Uso programático
+├── lab/                       # Laboratorio Flask vulnerable
+├── src/websec/
+│   ├── core/                  # Escáner, cliente HTTP, crawler, modelos, puntuación
+│   ├── modules/               # Módulos activos y pasivos
+│   ├── reports/               # Generadores de reportes y plantilla HTML
+│   └── data/                  # Rutas sensibles, librerías vulnerables, lista de palabras
+├── tests/
+├── CONTRIBUTING.md
+├── ETHICS.md
+└── pyproject.toml
 ```
 
 ---
 
+## 🤝 Contribuir
+
+Lee [CONTRIBUTING.md](CONTRIBUTING.md) para añadir módulos nuevos, el estilo de código y la política de pruebas.
+
 ## 📄 Licencia
 
-Este proyecto está distribuido bajo la **Licencia MIT**. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+[MIT](LICENSE)
